@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Gestionnaire de Colis{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+        .container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Gestionnaire de Colis</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="{% url 'liste_colis' %}">Colis</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'liste_employes' %}">Employés</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'liste_clients' %}">Clients</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'tableau_bord' %}">Tableau de Bord</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+    <div class="footer">
+        <p>© 2024 Gestionnaire de Colis</p>
+    </div>
+</body>
+</html>

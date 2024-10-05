@@ -1,0 +1,46 @@
+{% extends 'colis/base.html' %}
+{% block title %}Tableau de Bord{% endblock %}
+{% block content %}
+<h1>Tableau de Bord</h1>
+
+<h2>Statistiques de la Semaine en Cours ({{ start_of_week }} - {{ end_of_week }})</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Client</th>
+            <th>Nombre de Colis</th>
+            <th>Poids Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for client in clients_data %}
+        <tr>
+            <td>{{ client.nom }}</td>
+            <td>{{ client.colis_count }}</td>
+            <td>{{ client.poids_total|default:"0" }} kg</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Statistiques des Colis par Entrepôt</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Entrepôt</th>
+            <th>Nombre de Colis</th>
+            <th>Poids Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entrepot in entrepots_data %}
+        <tr>
+            <td>{{ entrepot.nom }}</td>
+            <td>{{ entrepot.colis_count }}</td>
+            <td>{{ entrepot.poids_total|default:"0" }} kg</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'colis/base.html' %}
+{% block title %}Liste des Colis{% endblock %}
+{% block content %}
+    <h1>Liste des Colis</h1>
+    <form method="get">
+        <input type="text" name="q" placeholder="Rechercher par référence..." value="{{ query }}">
+        <button type="submit">Rechercher</button>
+    </form>
+
+    <a href="{% url 'ajouter' %}" class="btn btn-success mb-3">Ajouter un Nouveau Colis</a>
+    
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Référence</th>
+                <th>Description</th>
+                <th>Poids (kg)</th>
+                <th>Origine</th>
+                <th>Destination</th>
+                <th>Statut</th>
+                <th>Entrepôt</th>
+                <th>Expéditeur</th>
+                <th>Récepteur</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for colis in page_obj %}
+            <tr>
+                <td>{{ colis.reference }}</td>
+                <td>{{ colis.description }}</td>
+                <td>{{ colis.poids }}</td>
+                <td>{{ colis.origine }}</td>
+                <td>{{ colis.destination }}</td>
+                <td>{{ colis.statut }}</td>
+                <td>{% if colis.entrepot %}{{ colis.entrepot.nom }}{% else %}Non Assigné{% endif %}</td>
+                <td>{% if colis.expediteur %}{{ colis.expediteur.nom }}{% else %}Inconnu{% endif %}</td>
+                <td>{% if colis.recepteur %}{{ colis.recepteur.nom }}{% else %}Inconnu{% endif %}</td>
+                <td>
+                    <a href="{% url 'details_colis' colis.reference %}">Détails</a> |
+                    <a href="{% url 'modifier_colis' colis.reference %}">Modifier</a> |
+                    <a href="{% url 'modifier_statut_colis' colis.reference %}">Changer Statut</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div>
+        <span>Page {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+    </div>
+    
+    <div>
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">Précédent</a>
+        {% endif %}
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}">Suivant</a>
+        {% endif %}
+    </div>
+{% endblock %}

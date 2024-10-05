@@ -1,0 +1,11 @@
+{% extends 'colis/base.html' %}
+{% block title %}Supprimer le Colis - {{ colis.reference }}{% endblock %}
+{% block content %}
+    <h1>Supprimer le Colis : {{ colis.reference }}</h1>
+    <p>Êtes-vous sûr de vouloir supprimer ce colis ?</p>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Oui, supprimer</button>
+    </form>
+    <a href="{% url 'liste_colis' %}" class="btn btn-secondary mt-3">Annuler</a>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'colis/base.html' %}
+{% block title %}Détails de l'Employé{% endblock %}
+{% block content %}
+    <h1>Détails de l'Employé - {{ employe.user.username }}</h1>
+    <ul class="list-group">
+        <li class="list-group-item"><strong>Nom :</strong> {{ employe.user.first_name }} {{ employe.user.last_name }}</li>
+        <li class="list-group-item"><strong>Rôle :</strong> {{ employe.role }}</li>
+        <li class="list-group-item"><strong>Date de recrutement :</strong> {{ employe.date_recrutement }}</li>
+    </ul>
+    <a href="{% url 'modifier_employe' employe.id %}" class="btn btn-warning mt-3">Modifier cet Employé</a>
+    <a href="{% url 'liste_employes' %}" class="btn btn-secondary mt-3">Retour à la liste des employés</a>
+{% endblock %}

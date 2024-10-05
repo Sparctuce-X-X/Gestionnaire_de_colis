@@ -1,0 +1,32 @@
+{% extends 'colis/base.html' %}
+{% block title %}Liste des Clients{% endblock %}
+{% block content %}
+    <h1>Liste des Clients</h1>
+    <a href="{% url 'ajouter_client' %}" class="btn btn-success mb-3">Ajouter un Nouveau Client</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Nombre de Colis Envoyés</th>
+                <th>Poids Total Envoyé</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for client in clients %}
+            <tr>
+                <td>{{ client.nom }}</td>
+                <td>{{ client.email }}</td>
+                <td>{{ client.nb_colis }}</td> <!-- Utiliser la méthode nb_colis -->
+                <td>{{ client.poids_total }} kg</td> <!-- Utiliser la méthode poids_total -->
+                <td>
+                    <a href="{% url 'details_client' client.id %}" class="btn btn-info btn-sm">Détails</a>
+                    <a href="{% url 'modifier_client' client.id %}" class="btn btn-warning btn-sm">Modifier</a>
+                    <a href="{% url 'supprimer_client' client.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

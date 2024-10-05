@@ -1,0 +1,29 @@
+{% extends 'colis/base.html' %}
+{% block title %}Liste des Employés{% endblock %}
+{% block content %}
+    <h1>Liste des Employés</h1>
+    <a href="{% url 'ajouter_employe' %}" class="btn btn-success mb-3">Ajouter un Nouvel Employé</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nom d'Utilisateur</th>
+                <th>Rôle</th>
+                <th>Date de Recrutement</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employe in employes %}
+            <tr>
+                <td>{{ employe.user.username }}</td>
+                <td>{{ employe.role }}</td>
+                <td>{{ employe.date_recrutement }}</td>
+                <td>
+                    <a href="{% url 'modifier_employe' employe.id %}" class="btn btn-warning btn-sm">Modifier</a>
+                    <a href="{% url 'supprimer_employe' employe.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

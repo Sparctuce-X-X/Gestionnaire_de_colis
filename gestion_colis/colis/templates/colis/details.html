@@ -1,0 +1,22 @@
+{% extends 'colis/base.html' %}
+{% block title %}Détails du Colis{% endblock %}
+{% block content %}
+    <h1>Détails du Colis - {{ colis.reference }}</h1>
+    <ul class="list-group">
+        <li class="list-group-item"><strong>Référence :</strong> {{ colis.reference }}</li>
+        <li class="list-group-item"><strong>Description :</strong> {{ colis.description }}</li>
+        <li class="list-group-item"><strong>Poids :</strong> {{ colis.poids }} kg</li>
+        <li class="list-group-item"><strong>Origine :</strong> {{ colis.origine }}</li>
+        <li class="list-group-item"><strong>Destination :</strong> {{ colis.destination }}</li>
+        <li class="list-group-item"><strong>Statut :</strong> {{ colis.statut }}</li>
+        <li class="list-group-item"><strong>Entrepôt :</strong> {% if colis.entrepot %}{{ colis.entrepot.nom }}{% else %}Non Assigné{% endif %}</li>
+        <li class="list-group-item"><strong>Date d'envoi :</strong> {{ colis.date_envoi }}</li>
+        <li class="list-group-item"><strong>Expéditeur :</strong> {{ colis.expediteur.nom }} ({{ colis.expediteur.telephone }})</li>
+        <li class="list-group-item"><strong>Récepteur :</strong> {{ colis.recepteur.nom }} ({{ colis.recepteur.telephone }})</li>
+    </ul>
+    <a href="{% url 'modifier_colis' colis.reference %}" class="btn btn-warning mt-3">Modifier ce Colis</a>
+    <a href="{% url 'liste_colis' %}" class="btn btn-secondary mt-3">Retour à la liste des Colis</a>
+
+    <a href="{% url 'generer_facture' colis.id %}" class="btn btn-primary mt-3">Générer Facture</a>
+
+{% endblock %}

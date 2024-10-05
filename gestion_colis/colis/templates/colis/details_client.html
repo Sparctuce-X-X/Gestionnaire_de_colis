@@ -1,0 +1,32 @@
+{% extends 'colis/base.html' %}
+{% block title %}Détails du Client{% endblock %}
+{% block content %}
+    <h1>Détails de {{ client.nom }}</h1>
+    <p>Email: {{ client.email }}</p>
+    <p>Téléphone: {{ client.telephone }}</p>
+    <p>Adresse: {{ client.adresse }}</p>
+    <h2>Colis envoyés</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Référence</th>
+                <th>Description</th>
+                <th>Poids (kg)</th>
+                <th>Statut</th>
+                <th>Date d'envoi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for colis in client.colis_envoyes.all %}
+            <tr>
+                <td>{{ colis.reference }}</td>
+                <td>{{ colis.description }}</td>
+                <td>{{ colis.poids }}</td>
+                <td>{{ colis.statut }}</td>
+                <td>{{ colis.date_envoi }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'liste_clients' %}" class="btn btn-primary">Retour à la liste des clients</a>
+{% endblock %}

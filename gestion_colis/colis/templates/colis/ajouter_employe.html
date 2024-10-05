@@ -1,0 +1,11 @@
+{% extends 'colis/base.html' %}
+{% block title %}Ajouter un Employé{% endblock %}
+{% block content %}
+    <h1>Ajouter un Employé</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Ajouter</button>
+    </form>
+    <a href="{% url 'liste_employes' %}" class="btn btn-secondary mt-3">Retour à la liste des employés</a>
+{% endblock %}

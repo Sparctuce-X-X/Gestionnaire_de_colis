@@ -1,0 +1,11 @@
+{% extends 'colis/base.html' %}
+{% block title %}Modifier le Colis - {{ colis.reference }}{% endblock %}
+{% block content %}
+    <h1>Modifier le Colis - {{ colis.reference }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+    </form>
+    <a href="{% url 'details_colis' colis.reference %}" class="btn btn-secondary mt-3">Annuler et retourner aux détails</a>
+{% endblock %}
