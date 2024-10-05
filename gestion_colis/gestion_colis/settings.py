@@ -27,11 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# settings.py
-TWILIO_ACCOUNT_SID = 'ACdf1b4f6b29c3c60a91707243eba75ea9'  # Ton SID
-TWILIO_AUTH_TOKEN = '1cbf420c864513c1afab84303f025095'      # Ton Token
-TWILIO_PHONE_NUMBER = '+15402742024'  # Ton numéro Twilio
-
 
 # Application definition
 

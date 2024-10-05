@@ -1,8 +1,6 @@
 from django import forms
 from .models import Colis, Employe, Client  # Importation des modèles nécessaires
 from django.utils import timezone
-from .models import Entrepot, Colis, Employe, Client
-
 # Formulaire pour modifier le statut d'un colis
 class StatutColisForm(forms.ModelForm):
     class Meta:
@@ -33,19 +31,33 @@ class EmployeForm(forms.ModelForm):
 
 # Formulaire pour le modèle Colis
 class ColisForm(forms.ModelForm):
-    expediteur = forms.ModelChoiceField(queryset=Client.objects.all(), label="Expéditeur")
-    recepteur = forms.ModelChoiceField(queryset=Client.objects.all(), label="Récepteur")
-
     class Meta:
         model = Colis
-        fields = ['reference', 'description', 'poids', 'origine', 'destination', 'statut', 'expediteur', 'recepteur']
-
-
-    def __init__(self, *args, **kwargs):
-        super(ColisForm, self).__init__(*args, **kwargs)
-        # Remplir les choix des champs d'origine et de destination avec les entrepôts
-        self.fields['origine'].queryset = Entrepot.objects.all()
-        self.fields['destination'].queryset = Entrepot.objects.all()
+        fields = ['reference', 'description', 'poids', 'origine', 'destination', 'statut', 'entrepot', 'date_envoi', 'expediteur', 'recepteur']
+        labels = {
+            'reference': 'Référence',
+            'description': 'Description',
+            'poids': 'Poids (kg)',
+            'origine': 'Lieu d\'origine',
+            'destination': 'Lieu de destination',
+            'statut': 'Statut actuel',
+            'entrepot': 'Entrepôt associé',
+            'date_envoi': 'Date d\'envoi',
+            'expediteur': 'Expéditeur',
+            'recepteur': 'Récepteur',
+        }
+        widgets = {
+            'reference': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'poids': forms.NumberInput(attrs={'class': 'form-control'}),
+            'origine': forms.TextInput(attrs={'class': 'form-control'}),
+            'destination': forms.TextInput(attrs={'class': 'form-control'}),
+            'statut': forms.Select(attrs={'class': 'form-control'}),
+            'entrepot': forms.Select(attrs={'class': 'form-control'}),
+            'date_envoi': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'expediteur': forms.Select(attrs={'class': 'form-control'}),
+            'recepteur': forms.Select(attrs={'class': 'form-control'}),
+        }
 
 # Formulaire pour le modèle Client
 class ClientForm(forms.ModelForm):

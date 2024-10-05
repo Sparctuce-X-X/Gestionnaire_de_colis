@@ -7,7 +7,9 @@ from datetime import timedelta
 from .forms import WeekSelectionForm
 from django.db.models import Count, Sum, Q
 from datetime import datetime, timedelta 
-from .utils import send_sms 
+from .utils import send_sms  # Assurez-vous que le chemin est correct
+
+
 # -------------- Vues pour la gestion des Colis --------------
 
 def liste_colis(request):
@@ -22,7 +24,6 @@ def liste_colis(request):
     page_obj = paginator.get_page(page_number)
     
     return render(request, 'colis/liste.html', {'page_obj': page_obj, 'query': query})
-
 
 
 
@@ -44,6 +45,7 @@ def ajouter_colis(request):
     else:
         form = ColisForm()
     return render(request, 'colis/ajouter.html', {'form': form})
+
 
 
 def modifier_colis(request, reference):
@@ -149,32 +151,38 @@ def supprimer_client(request, id):
     return render(request, 'colis/supprimer.html', {'client': client})
 
 def tableau_bord(request):
-    # Date d'aujourd'hui
-    today = timezone.now().date()
-    # Obtenir la date du début de la semaine en cours (lundi)
-    start_of_week = today - timedelta(days=today.weekday())
-    # Obtenir la date de fin de la semaine (dimanche)
-    end_of_week = start_of_week + timedelta(days=6)
+    # Gestion des dates pour la semaine
+    today = datetime.now()
+    start_of_week = today - timedelta(days=today.weekday())  # Lundi
+    end_of_week = start_of_week + timedelta(days=6)  # Dimanche
 
-    # Statistiques de la semaine en cours
+    # Traitement du formulaire
+    form = WeekSelectionForm(request.GET or None)
+
+    if form.is_valid():
+        # Ici, vous pouvez gérer les dates de la semaine selon la sélection de l'utilisateur
+        # Pour l'instant, nous utilisons la semaine actuelle
+        pass
+
+    # Récupération des clients et de leurs colis envoyés cette semaine
     clients_data = Client.objects.annotate(
         colis_count=Count('colis_envoyes', filter=Q(colis_envoyes__date_envoi__range=[start_of_week, end_of_week])),
         poids_total=Sum('colis_envoyes__poids', filter=Q(colis_envoyes__date_envoi__range=[start_of_week, end_of_week])),
     )
 
-    # Statistiques des colis par entrepôt
-    entrepots_data = Entrepot.objects.annotate(
-        colis_count=Count('colis_origine') + Count('colis_destination'),  # Compte tous les colis associés à l'entrepôt
-        poids_total=Sum('colis_origine__poids') + Sum('colis_destination__poids')  # Somme des poids des colis
+    # Récupération des entrepôts et du nombre de colis
+    entrepots = Entrepot.objects.annotate(
+        capacite_utilisee=Count('colis')
     )
 
     context = {
-        'clients_data': clients_data,
-        'entrepots_data': entrepots_data,  # Ajout des données des entrepôts
+        'form': form,
         'start_of_week': start_of_week,
         'end_of_week': end_of_week,
+        'clients_data': clients_data,
+        'entrepots': entrepots,
     }
-    
+
     return render(request, 'colis/tableau_bord.html', context)
 
 
@@ -218,16 +226,14 @@ def modifier_statut_colis(request, reference):
     colis = get_object_or_404(Colis, reference=reference)
 
     if request.method == 'POST':
-        # Récupérer l'ancien statut
-        ancien_statut = colis.statut
-        
+        ancien_statut = colis.statut  # Récupérer l'ancien statut
         form = StatutColisForm(request.POST, instance=colis)
         if form.is_valid():
             colis = form.save()  # Enregistrer le colis avec le nouveau statut
             
             # Vérifier si le statut a changé
             if ancien_statut != colis.statut:
-                message = f"Le statut de votre colis {colis.reference} a est passé de '{ancien_statut}' à '{colis.statut}'."
+                message = f"Le statut de votre colis {colis.reference} a été modifié de '{ancien_statut}' à '{colis.statut}'."
                 
                 # Envoyer SMS à l'expéditeur et au récepteur
                 send_sms(colis.expediteur.telephone, message)

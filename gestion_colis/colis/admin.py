@@ -9,10 +9,10 @@ class ClientAdmin(admin.ModelAdmin):
 
 # Personnalisation de l'affichage du modèle Colis
 class ColisAdmin(admin.ModelAdmin):
-    list_display = ('reference', 'origine', 'destination', 'poids', 'statut', 'expediteur', 'recepteur')
-    search_fields = ('reference', 'origine__nom', 'destination__nom', 'expediteur__nom', 'recepteur__nom')
-    list_filter = ('statut', 'expediteur', 'recepteur')
-    list_editable = ('statut',)
+    list_display = ('reference', 'origine', 'destination', 'poids', 'statut', 'entrepot', 'expediteur', 'recepteur')
+    search_fields = ('reference', 'origine', 'destination', 'expediteur__nom', 'recepteur__nom')
+    list_filter = ('statut', 'entrepot', 'expediteur', 'recepteur')
+    list_editable = ('statut', 'entrepot')  # Permet de modifier directement le statut et l'entrepôt dans la liste
 
 # Personnalisation de l'affichage du modèle Employe
 class EmployeAdmin(admin.ModelAdmin):
@@ -28,6 +28,6 @@ class EntrepotAdmin(admin.ModelAdmin):
 
 # Enregistrement des modèles dans l'administration
 admin.site.register(Entrepot, EntrepotAdmin)
-admin.site.register(Colis, ColisAdmin)  # Enregistrement du modèle Colis
+admin.site.register(Colis, ColisAdmin)
 admin.site.register(Employe, EmployeAdmin)
 admin.site.register(Client, ClientAdmin)

@@ -1,20 +1,16 @@
-from decouple import config
 from twilio.rest import Client
-from twilio.base.exceptions import TwilioRestException
+
+# Remplacez les valeurs par vos identifiants Twilio
+TWILIO_ACCOUNT_SID = 'ACdf1b4f6b29c3c60a91707243eba75ea9'  # Votre SID
+TWILIO_AUTH_TOKEN = '1cbf420c864513c1afab84303f025095'  # Votre token
+TWILIO_PHONE_NUMBER = '+15402742024'  # Votre numéro Twilio
 
 def send_sms(to, body):
-    account_sid = config('TWILIO_ACCOUNT_SID')
-    auth_token = config('TWILIO_AUTH_TOKEN')
-    from_number = config('TWILIO_PHONE_NUMBER')
-    client = Client(account_sid, auth_token)
+    client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
-    try:
-        message = client.messages.create(
-            body=body,
-            from_=from_number,
-            to=to
-        )
-        return message.sid
-    except TwilioRestException as e:
-        print(f"Erreur lors de l'envoi du SMS: {e}")
-        return None
+    message = client.messages.create(
+        body=body,
+        from_=TWILIO_PHONE_NUMBER,  # Utiliser la variable ici
+        to=to
+    )
+    return message.sid
