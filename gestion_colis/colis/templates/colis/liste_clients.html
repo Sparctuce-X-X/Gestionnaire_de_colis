@@ -2,6 +2,13 @@
 {% block title %}Liste des Clients{% endblock %}
 {% block content %}
     <h1>Liste des Clients</h1>
+    <form method="get" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="q" class="form-control" placeholder="Rechercher par nom..." value="{{ query }}">
+            <button type="submit" class="btn btn-primary">Rechercher</button>
+        </div>
+    </form>
+
     <a href="{% url 'ajouter_client' %}" class="btn btn-success mb-3">Ajouter un Nouveau Client</a>
     <table class="table table-striped">
         <thead>
@@ -18,8 +25,8 @@
             <tr>
                 <td>{{ client.nom }}</td>
                 <td>{{ client.email }}</td>
-                <td>{{ client.nb_colis }}</td> <!-- Utiliser la méthode nb_colis -->
-                <td>{{ client.poids_total }} kg</td> <!-- Utiliser la méthode poids_total -->
+                <td>{{ client.nb_colis }}</td>
+                <td>{{ client.poids_total }} kg</td>
                 <td>
                     <a href="{% url 'details_client' client.id %}" class="btn btn-info btn-sm">Détails</a>
                     <a href="{% url 'modifier_client' client.id %}" class="btn btn-warning btn-sm">Modifier</a>

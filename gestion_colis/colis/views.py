@@ -77,8 +77,14 @@ def modifier_statut_colis(request, reference):
 # -------------- Vues pour la gestion des Employés --------------
 
 def liste_employes(request):
-    employes = Employe.objects.all()
-    return render(request, 'colis/liste_employes.html', {'employes': employes})
+    query = request.GET.get('q', '')
+    if query:
+        employes = Employe.objects.filter(user__username__icontains=query)
+    else:
+        employes = Employe.objects.all()
+    
+    return render(request, 'colis/liste_employes.html', {'employes': employes, 'query': query})
+
 
 def ajouter_employe(request):
     if request.method == 'POST':
@@ -115,8 +121,14 @@ def supprimer_employe(request, id):
 # -------------- Vues pour la gestion des Clients --------------
 
 def liste_clients(request):
-    clients = Client.objects.all()
-    return render(request, 'colis/liste_clients.html', {'clients': clients})
+    query = request.GET.get('q', '')
+    if query:
+        clients = Client.objects.filter(nom__icontains=query)
+    else:
+        clients = Client.objects.all()
+
+    return render(request, 'colis/liste_clients.html', {'clients': clients, 'query': query})
+
 
 def ajouter_client(request):
     if request.method == 'POST':

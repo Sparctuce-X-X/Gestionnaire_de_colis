@@ -2,6 +2,13 @@
 {% block title %}Liste des Employés{% endblock %}
 {% block content %}
     <h1>Liste des Employés</h1>
+    <form method="get" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="q" class="form-control" placeholder="Rechercher par nom d'utilisateur..." value="{{ query }}">
+            <button type="submit" class="btn btn-primary">Rechercher</button>
+        </div>
+    </form>
+
     <a href="{% url 'ajouter_employe' %}" class="btn btn-success mb-3">Ajouter un Nouvel Employé</a>
     <table class="table table-striped">
         <thead>
