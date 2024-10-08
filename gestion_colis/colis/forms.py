@@ -33,7 +33,7 @@ class EmployeForm(forms.ModelForm):
 class ColisForm(forms.ModelForm):
     class Meta:
         model = Colis
-        fields = ['reference', 'description', 'poids', 'origine', 'destination', 'statut', 'entrepot', 'date_envoi', 'expediteur', 'recepteur']
+        fields = ['description', 'poids', 'origine', 'destination', 'statut', 'entrepot', 'date_envoi', 'expediteur', 'recepteur']
         labels = {
             'reference': 'Référence',
             'description': 'Description',

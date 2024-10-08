@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import uuid
 
 # Modèle pour les Entrepôts
 class Entrepot(models.Model):
@@ -24,6 +25,8 @@ class Client(models.Model):
     def poids_total(self):
         return sum(colis.poids for colis in self.colis_envoyes.all())  # Somme des poids de tous les colis envoyés
 # Modèle pour les Colis
+
+
 class Colis(models.Model):
     STATUTS = [
         ('EN ATTENTE', 'En attente'),
@@ -31,7 +34,7 @@ class Colis(models.Model):
         ('LIVRE', 'Livré'),
     ]
 
-    reference = models.CharField(max_length=50, unique=True)
+    reference = models.CharField(max_length=50, unique=True, editable=False)
     description = models.TextField()
     poids = models.DecimalField(max_digits=10, decimal_places=2)
     origine = models.CharField(max_length=100)
@@ -41,12 +44,14 @@ class Colis(models.Model):
     entrepot = models.ForeignKey(Entrepot, on_delete=models.SET_NULL, null=True, blank=True)
     expediteur = models.ForeignKey(Client, on_delete=models.SET_NULL, related_name='colis_envoyes', null=True, blank=True)
     recepteur = models.ForeignKey(Client, on_delete=models.SET_NULL, related_name='colis_recus', null=True, blank=True)
-    entrepot = models.ForeignKey(Entrepot, on_delete=models.SET_NULL, null=True, blank=True)
 
-    def __str__(self):
-        return self.reference
+    def save(self, *args, **kwargs):
+        if not self.reference:  # Générer la référence si elle n'existe pas
+            self.reference = str(uuid.uuid4())[:8]  # Générer un ID unique (UUID) et le tronquer à 8 caractères
+        super(Colis, self).save(*args, **kwargs)  # Appeler la méthode save de la classe parente
 
-# Modèle pour les Employés
+
+
 class Employe(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(max_length=50, choices=[('ADMIN', 'Administrateur'), ('AGENT', 'Agent de Distribution')], default='AGENT')
@@ -54,5 +59,3 @@ class Employe(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.role}"
-
-

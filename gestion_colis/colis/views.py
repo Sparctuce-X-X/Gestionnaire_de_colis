@@ -31,9 +31,7 @@ def ajouter_colis(request):
     if request.method == 'POST':
         form = ColisForm(request.POST)
         if form.is_valid():
-            colis = form.save()
-
-            # Récupération de l'expéditeur
+            colis = form.save()  # La référence sera générée automatiquement
             expediteur = colis.expediteur
             expediteur_numero = expediteur.telephone  # Assurez-vous que c'est le bon champ
 
@@ -45,6 +43,7 @@ def ajouter_colis(request):
     else:
         form = ColisForm()
     return render(request, 'colis/ajouter.html', {'form': form})
+
 
 
 
@@ -203,6 +202,12 @@ from django.http import HttpResponse
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from .models import Colis
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
+
 
 def generer_facture(request, colis_id):
     colis = get_object_or_404(Colis, id=colis_id)
@@ -210,29 +215,60 @@ def generer_facture(request, colis_id):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="facture_{colis.reference}.pdf"'
 
-    p = canvas.Canvas(response, pagesize=letter)
-    width, height = letter
+    # Création du document
+    doc = SimpleDocTemplate(response, pagesize=letter)
+    elements = []
+
+    # Styles
+    styles = getSampleStyleSheet()
+    title_style = styles['Title']
+    title_style.fontSize = 24
+
+    # Titre de la facture
+    elements.append(Paragraph("Facture", title_style))
+    elements.append(Paragraph(f"Référence: {colis.reference}", styles['Normal']))
+    elements.append(Paragraph(f"Date d'envoi: {colis.date_envoi.strftime('%d %B %Y')}", styles['Normal']))
+    elements.append(Paragraph(" ", styles['Normal']))  # Ligne vide
 
     # Informations de l'agence
-    p.drawString(100, height - 50, "Yanis K Africa")
-    p.drawString(100, height - 65, "2 avenue Henri Barbusse")
-    p.drawString(100, height - 80, "93000 Bobigny")
-    p.drawString(100, height - 95, "Tel: 06 14 06 29 34")
+    elements.append(Paragraph("Yanis K Africa", styles['Normal']))
+    elements.append(Paragraph("2 avenue Henri Barbusse", styles['Normal']))
+    elements.append(Paragraph("93000 Bobigny", styles['Normal']))
+    elements.append(Paragraph("Tel: 06 14 06 29 34", styles['Normal']))
+    elements.append(Paragraph(" ", styles['Normal']))  # Ligne vide
 
     # Détails du colis
-    p.drawString(100, height - 120, f"Facture pour le colis {colis.reference}")
-    p.drawString(100, height - 140, f"Expéditeur: {colis.expediteur.nom} ({colis.expediteur.telephone})")
-    p.drawString(100, height - 160, f"Récepteur: {colis.recepteur.nom} ({colis.recepteur.telephone})")
-    p.drawString(100, height - 180, f"Poids total: {colis.poids} kg")
-    p.drawString(100, height - 200, f"Nombre de colis: 1")
-    
-    total_price = colis.poids * 10  # 10 EUR par kg
-    p.drawString(100, height - 220, f"Total: {total_price} EUR")
-    p.drawString(100, height - 240, "Type de fret: Aérien")
+    elements.append(Paragraph("Détails du Colis", styles['Heading3']))
+    data = [
+        ['Expéditeur', f"{colis.expediteur.nom if colis.expediteur else 'Inconnu'} ({colis.expediteur.telephone if colis.expediteur else 'N/A'})"],
+        ['Récepteur', f"{colis.recepteur.nom if colis.recepteur else 'Inconnu'} ({colis.recepteur.telephone if colis.recepteur else 'N/A'})"],
+        ['Poids Total', f"{colis.poids} kg"],
+        ['Statut', colis.statut],
+    ]
 
-    p.showPage()
-    p.save()
+    # Créer un tableau pour les détails
+    table = Table(data)
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]))
+
+    elements.append(table)
+    elements.append(Paragraph(" ", styles['Normal']))  # Ligne vide
+
+    # Total
+    total_price = colis.poids * 10  # 10 EUR par kg
+    elements.append(Paragraph(f"Total à payer: {total_price} EUR", styles['Normal']))
+
+    # Générer le document
+    doc.build(elements)
     return response
+
 
 def modifier_statut_colis(request, reference):
     colis = get_object_or_404(Colis, reference=reference)
